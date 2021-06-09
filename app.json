@@ -6,9 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.daily-msg.com/daily-msg",
-      "buildNumber": "1.0.0"
+      "supportsTablet": true
     },
     "splash": {
       "image": "./assets/splash.png",
@@ -26,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.daily-msg.com/daily-msg",
+      "package": "com.daily_msg.daily_msg",
       "versionCode": 1
     },
     "web": {

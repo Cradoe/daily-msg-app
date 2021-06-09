@@ -1,6 +1,6 @@
 const LOCAL_API_HOST = "http://192.168.43.148/project2021/api.botsurance.ng/advice";
 
-const API_HOST = "https://dma1.daily-msg.com/";
+const API_HOST = "https://daily-msg.com/dma";
 
 export const quotesAPI = {
   TODAY_QUOTES: () => {

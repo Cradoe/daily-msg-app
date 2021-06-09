@@ -3,9 +3,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 import { screenOptionStyle } from "./screenOptionStyle";
-import SplashScreen from "../screens/spashScreen/";
-import HomeScreen from "../screens/homeScreen";
-import Test from "../screens/test";
+
+import SplashScreen from "../screens/splashScreen/";
+import WelcomeScreen from "../screens/welcomeScreen/";
 
 const Stack = createStackNavigator();
 
@@ -19,13 +19,8 @@ export const MainStackNavigator = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="HomeScreen"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Test"
-          component={Test}
+          name="WelcomeScreen"
+          component={WelcomeScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

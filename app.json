@@ -1,10 +1,15 @@
 {
   "expo": {
-    "name": "newsApp",
-    "slug": "newsApp",
+    "name": "Daily MSG",
+    "slug": "daily-msg",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.daily-msg.com/daily-msg",
+      "buildNumber": "1.0.0"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,17 +21,18 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#000000"
+      },
+      "package": "com.daily-msg.com/daily-msg",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": " Daily MSG provides fresh quotes/advice/sayings every day that is\n                intended to inspire the day to day life situations easier of our\n                users.",
+    "githubUrl": "https://github.com/Cradoe/daily-msg-app.git"
   }
 }

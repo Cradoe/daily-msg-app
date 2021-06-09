@@ -1,4 +1,4 @@
-import { PermissionsAndroid, Platform } from "react-native";
+import { Alert, PermissionsAndroid, Platform } from "react-native";
 import * as Sharing from "expo-sharing";
 import Clipboard from "expo-clipboard";
 import * as MediaLibrary from "expo-media-library";
@@ -33,7 +33,7 @@ export const hasAndroidPermission = async () => {
 
 export const savePicture = async (localUri) => {
   if (Platform.OS === "android" && !(await hasAndroidPermission())) {
-    console.log("You need to grant permission.");
+    Alert.alert("You need to grant permission.");
     return;
   }
   const timeStamp = new Date().getTime(),
@@ -56,7 +56,7 @@ export const savePicture = async (localUri) => {
 };
 export const openShareDialogAsync = async (localUrl) => {
   if (!(await Sharing.isAvailableAsync())) {
-    console.log("Your device does not allow sharing");
+    Alert.alert("Your device does not allow sharing");
     return;
   }
   await Sharing.shareAsync(localUrl);

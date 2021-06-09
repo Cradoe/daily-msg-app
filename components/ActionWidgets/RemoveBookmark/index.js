@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Icon } from "@ui-kitten/components";
 import { globalStyles } from "../../../shared/globalStyles";

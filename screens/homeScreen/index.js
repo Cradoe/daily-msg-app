@@ -1,71 +1,199 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  BottomNavigation,
-  BottomNavigationTab,
-  Icon,
-  Text
-} from "@ui-kitten/components";
-import { globalConstants } from "../../constants";
+import React, { useState, useRef, useEffect } from "react";
+import { Layout, Spinner, ViewPager, Text } from "@ui-kitten/components";
+import { SafeAreaView, View } from "react-native";
 import { globalStyles } from "../../shared/globalStyles";
-import About from "../aboutScreen";
-import BookmarkScreen from "../bookmarkScreen";
-import SingleView from "../singleView";
+import ViewShot from "react-native-view-shot";
+import ItemCard from "../../components/ItemCard";
+import ActionWidgets from "../../components/ActionWidgets";
+import {
+  bookmarkQuote,
+  captureAndSaveScreenshot,
+  captureAndShareScreenshot,
+  copyToClipboard
+} from "../../helpers/global";
+import QuoteViewTitle from "../../components/QuoteViewTitle";
+import { globalConstants } from "../../constants";
+import ErrorMessage from "../../components/ErrorMessage";
+import { retrieveDataFromLocalStorage } from "../../helpers";
+import * as Network from "expo-network";
+import { requestAllQuotes } from "../../actions";
+import NoInternet from "../../components/NoInternet";
 
-const { Navigator, Screen } = createBottomTabNavigator();
+const SingleView = ({ navigation }) => {
+  const [loadedQuotes, setLoadedQuotes] = useState(null),
+    [loadedCategories, setLoadedCategories] = useState([]),
+    [pagedCategoryIndex, setPagedCategoryIndex] = React.useState(0),
+    [showAtrribute, setShowAtrribute] = useState(false),
+    [currentQuote, setCurrentQuote] = useState(null),
+    [noInternetAccess, setNoInternetAccess] = useState(true),
+    [responseMessage, setResponseMessage] = useState(null),
+    shouldLoadPagedComponent = (index) => index === pagedCategoryIndex,
+    viewShotRef = useRef(null),
+    ActionWidgetActions = {
+      shareAsImage: () => {
+        captureAndShareScreenshot(viewShotRef, setShowAtrribute);
+      },
+      downloadAsImage: () => {
+        captureAndSaveScreenshot(viewShotRef, setShowAtrribute);
+      },
+      copyToClipboard: () => {
+        copyToClipboard(
+          `${currentQuote.quote} ${
+            currentQuote.citation ? " - " + currentQuote.citation : ""
+          }`
+        );
+      },
+      bookmark: () => {
+        bookmarkQuote(currentQuote);
+      }
+    },
+    loadCurrentQuote = (category_slug) => {
+      setCurrentQuote(null);
+      for (let index = 0; index < loadedQuotes.length; index++) {
+        const temp = loadedQuotes[index];
+        if (temp.category.slug === category_slug) {
+          setCurrentQuote(loadedQuotes[index]);
+          break;
+        }
+      }
+    },
+    requestSuccessCallback = (data) => {
+      setLoadedQuotes(data);
+    },
+    requestErrorCallback = (error) => {
+      console.log(error);
+    },
+    requestCallback = {
+      success: requestSuccessCallback,
+      error: requestErrorCallback
+    },
+    fetchQuotesFromServer = async () => {
+      await Network.getNetworkStateAsync()
+        .then((networkStatus) => {
+          if (networkStatus.isInternetReachable) {
+            if (!noInternetAccess) {
+              setNoInternetAccess(true);
+            }
+            requestAllQuotes(requestCallback, true);
+          } else {
+            setNoInternetAccess(false);
+          }
+        })
+        .catch((error) => {
+          console.log("Something went wrong", error);
+        });
+    },
+    extractCategories = () => {
+      const categories = [];
+      loadedQuotes.forEach((quote) => {
+        categories.push(quote.category);
+      });
+      setLoadedCategories(categories);
+    };
 
-const HomeIcon = (props) => (
-  <Icon {...props} fill={globalConstants.PRIMARY_COLOR} name="home-outline" />
-);
-const BookmarkIcon = (props) => (
-  <Icon {...props} fill={globalConstants.PRIMARY_COLOR} name="bookmark" />
-);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setResponseMessage(null);
+    }, 10000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [responseMessage]);
 
-const AboutIcon = (props) => (
-  <Icon
-    {...props}
-    fill={globalConstants.PRIMARY_COLOR}
-    name="smiling-face-outline"
-  />
-);
-const tabTitle = (title) => {
+  useEffect(() => {
+    retrieveDataFromLocalStorage("todayQuotes")
+      .then((todayQuotes) => {
+        if (todayQuotes) {
+          setLoadedQuotes(todayQuotes);
+        } else {
+          fetchQuotesFromServer();
+        }
+      })
+      .catch((error) => {
+        console.log("Something went wrong", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (loadedQuotes) {
+      extractCategories();
+    }
+  }, [loadedQuotes]);
+
+  const categoryPagerList =
+    loadedQuotes && loadedQuotes.length > 0
+      ? loadedQuotes.map((quote, index) => {
+          return (
+            <View
+              key={index}
+              style={{
+                minHeight: (70 / 100) * globalConstants.SCREEN_HEIGHT
+              }}
+            >
+              {currentQuote ? (
+                <>
+                  <ActionWidgets action={ActionWidgetActions} />
+                  <ViewShot
+                    style={[
+                      globalStyles.containerPadding,
+                      { paddingBottom: 50 }
+                    ]}
+                    ref={viewShotRef}
+                    options={{ format: "png", quality: 1 }}
+                  >
+                    <ItemCard
+                      quote={currentQuote}
+                      showAtrribute={showAtrribute}
+                    />
+                  </ViewShot>
+                </>
+              ) : (
+                <View
+                  style={[
+                    globalStyles.centerCenter,
+                    { height: (60 / 100) * globalConstants.SCREEN_HEIGHT }
+                  ]}
+                >
+                  <Spinner />
+                </View>
+              )}
+            </View>
+          );
+        })
+      : [];
   return (
-    <Text
-      style={[
-        globalStyles.textPrimary,
-        globalStyles.textSmall,
-        globalStyles.fontRegular
-      ]}
-    >
-      {title}
-    </Text>
+    <SafeAreaView style={[globalStyles.root, globalStyles.bgBlack]}>
+      <Layout
+        style={[
+          globalStyles.bgBlack,
+          globalStyles.root,
+          { position: "relative" }
+        ]}
+      >
+        {loadedCategories.length > 0 ? (
+          <QuoteViewTitle
+            categories={loadedCategories}
+            onSelect={loadCurrentQuote}
+            onSwipe={pagedCategoryIndex}
+          />
+        ) : null}
+        {categoryPagerList.length > 0 ? (
+          <ViewPager
+            selectedIndex={pagedCategoryIndex}
+            shouldLoadComponent={shouldLoadPagedComponent}
+            onSelect={(index) => setPagedCategoryIndex(index)}
+          >
+            {categoryPagerList}
+          </ViewPager>
+        ) : null}
+
+        {responseMessage ? <ErrorMessage message={responseMessage} /> : null}
+        {noInternetAccess ? (
+          <NoInternet retryAction={fetchQuotesFromServer} />
+        ) : null}
+      </Layout>
+    </SafeAreaView>
   );
 };
-const BottomTabBar = ({ navigation, state }) => (
-  <BottomNavigation
-    indicatorStyle={{
-      backgroundColor: globalConstants.SECONDARY_COLOR,
-      color: globalConstants.PRIMARY_COLOR,
-      height: 4
-    }}
-    selectedIndex={state.index}
-    onSelect={(index) => navigation.navigate(state.routeNames[index])}
-  >
-    <BottomNavigationTab title={() => tabTitle("Home")} icon={HomeIcon} />
-    <BottomNavigationTab
-      title={() => tabTitle("Bookmark")}
-      icon={BookmarkIcon}
-    />
-    <BottomNavigationTab title={() => tabTitle("About")} icon={AboutIcon} />
-  </BottomNavigation>
-);
 
-const Home = () => (
-  <Navigator tabBar={(props) => <BottomTabBar {...props} />}>
-    <Screen name="Home" component={SingleView} />
-    <Screen name="Bookmark" component={BookmarkScreen} />
-    <Screen name="About" component={About} />
-  </Navigator>
-);
-
-export default Home;
+export default SingleView;

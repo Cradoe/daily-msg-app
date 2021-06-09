@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     bottom: -10,
-    left: "35%",
+    left: "26%",
     borderColor: "#fff",
     borderWidth: 1,
     paddingHorizontal: 20

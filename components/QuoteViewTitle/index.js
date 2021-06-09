@@ -3,31 +3,16 @@ import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { MenuItem, OverflowMenu, Icon, Text } from "@ui-kitten/components";
 import { globalStyles } from "../../shared/globalStyles";
 import { globalConstants } from "../../constants";
-import { fetchAllCategories } from "../../actions";
 
 const QuoteViewTitle = (props) => {
   const { onSelect, onSwipe, categories } = props,
     [visible, setVisible] = useState(false),
-    [cat, setLoadedCat] = useState([]),
     [selectedCategory, setSelectedCategory] = useState(
       globalConstants.INITIAL_CATEGORY
     ),
     handleIndexChange = ({ index }) => {
       setVisible(false);
       setSelectedCategory(cat[index.row]);
-    },
-    successCallback = (data) => {
-      setLoadedCat(data);
-    },
-    errorCallback = (error) => {
-      console.log(error);
-    },
-    callback = {
-      success: successCallback,
-      error: errorCallback
-    },
-    fetchCategoriesFromServer = async () => {
-      await fetchAllCategories(callback);
     };
 
   const categoryMenuItems =
@@ -40,11 +25,6 @@ const QuoteViewTitle = (props) => {
           />
         ))
       : [];
-
-  useEffect(() => {
-    // console.log("categories", categories);
-    if (cat.length === 0) fetchCategoriesFromServer();
-  }, []);
 
   useEffect(() => {
     if (selectedCategory) onSelect(selectedCategory.slug);

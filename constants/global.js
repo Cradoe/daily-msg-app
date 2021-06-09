@@ -16,8 +16,8 @@ export const globalConstants = {
       "Content-Type": "application/json"
     }
   },
-  ATTRIBUTION: "Daily Bread",
-  IMAGE_DOWNLOAD_DIRECTORY: "Daily Bread",
+  ATTRIBUTION: "www.daily-msg.com",
+  IMAGE_DOWNLOAD_DIRECTORY: "DailyMSG",
   INITIAL_CATEGORY: { id: 1, slug: "advice", category: "Advice" },
   CATEGORIES: "categories"
 };

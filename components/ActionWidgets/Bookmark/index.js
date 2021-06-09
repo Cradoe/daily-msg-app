@@ -4,8 +4,7 @@ import { Icon, Tooltip } from "@ui-kitten/components";
 import { globalStyles } from "../../../shared/globalStyles";
 
 const BookmarkWidget = ({ action }) => {
-  const [visible, setVisible] = React.useState(false),
-    [bookmarkColor, setBookmarkColor] = useState("#8F9BB3"),
+  const [visible, setVisible] = useState(false),
     handlePress = () => {
       setVisible(true);
       action();
@@ -19,7 +18,7 @@ const BookmarkWidget = ({ action }) => {
         style={globalStyles.widgetHMargin}
       >
         <Icon
-          fill={bookmarkColor}
+          fill="#8F9BB3"
           name="bookmark"
           style={[globalStyles.widgetIcon]}
         />

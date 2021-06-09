@@ -23,12 +23,13 @@ const About = () => {
         >
           About Us
         </Text>
-        <ScrollView style={globalStyles.mt20}>
-          <Card>
+        <ScrollView style={[globalStyles.mt20, globalStyles.mb20]}>
+          <Card style={globalStyles.mb20}>
             <View>
               <Text style={styles.paragraph}>
-                Daily Banga provides fresh quotes every day that inspires our
-                users' action.
+                Daily MSG provides fresh quotes/advice/sayings every day that is
+                intended to inspire the day to day life situations easier of our
+                users.
               </Text>
               <Text style={styles.paragraph}>
                 We bring to you contents, sourced from all around the world, in
@@ -55,9 +56,11 @@ const About = () => {
                 domain and remain the rightful copyright of the owner.
               </Text>
 
-              <Text style={styles.paragraph}>Email: info@dailybanga.com</Text>
+              <Text style={styles.paragraph}>Email: info@daily-msg.com</Text>
               <Text style={styles.paragraph}>Phone: +234(0) 814 961 7083</Text>
-              <Text style={styles.paragraph}>Website: www.dailybanga.com</Text>
+              <Text style={[styles.paragraph, globalStyles.mb20]}>
+                Website: www.daily-msg.com
+              </Text>
             </View>
           </Card>
         </ScrollView>

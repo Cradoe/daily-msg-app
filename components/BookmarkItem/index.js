@@ -22,9 +22,7 @@ const BookmarkItem = ({ quote }) => {
       },
       copyToClipboard: () => {
         copyToClipboard(
-          `${currentQuote.quote} ${
-            currentQuote.citation ? " - " + currentQuote.citation : ""
-          }`
+          `${quote.quote} ${quote.citation ? " - " + quote.citation : ""}`
         );
       },
       removeBookmark: () => {

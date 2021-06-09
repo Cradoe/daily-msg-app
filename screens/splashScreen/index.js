@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
+import { CommonActions } from "@react-navigation/native";
 import Constants from "expo-constants";
 import * as Network from "expo-network";
 import * as Notifications from "expo-notifications";
-import { Layout, Text, Button, Icon } from "@ui-kitten/components";
+import { Layout, Spinner } from "@ui-kitten/components";
 import {
   StyleSheet,
   View,
@@ -13,32 +14,16 @@ import {
 } from "react-native";
 import { globalStyles } from "../../shared/globalStyles";
 import { globalConstants } from "../../constants";
-import { appIcon } from "../../shared/generalAssets";
+import { secondaryLogo } from "../../shared/generalAssets";
 import NoInternet from "../../components/NoInternet";
 import { requestAllQuotes, registerPushTokenToServer } from "../../actions";
 import { retrieveDataFromLocalStorage } from "../../helpers";
-
-const StarIcon = (props) => <Icon {...props} name="arrowhead-right-outline" />;
 
 const SplashScreen = ({ navigation }) => {
   const responseListener = useRef(),
     [internetIsReachable, setInternetIsReachable] = useState(true),
     [hasFetchedQuotes, setHasFetchedQuotes] = useState(false),
     [hasSavedPushToken, setHasSavedPushToken] = useState(false),
-    [ctaButtonText, setCtaButtonText] = useState("Continue"),
-    handleCtaPress = () => {
-      if (hasFetchedQuotes) {
-        navigation.navigate("HomeScreen");
-      } else {
-        setCtaButtonText("Please Wait");
-        setTimeout(() => {
-          if (!hasFetchedQuotes) {
-            fetchQuotesFromServer();
-            setCtaButtonText("Continue");
-          }
-        }, 5000);
-      }
-    },
     successCallback = () => {
       setHasFetchedQuotes(true);
     },
@@ -120,7 +105,18 @@ const SplashScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (internetIsReachable) {
+    if (hasFetchedQuotes && hasSavedPushToken) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{ name: "WelcomeScreen" }]
+        })
+      );
+    }
+  }, [hasFetchedQuotes, hasSavedPushToken]);
+
+  useEffect(() => {
+    if (internetIsReachable && !hasSavedPushToken) {
       // push Notification
       registerForPushNotificationsAsync().then((token) => {
         registerNotifiationTokenToServer(token);
@@ -128,7 +124,12 @@ const SplashScreen = ({ navigation }) => {
 
       responseListener.current = Notifications.addNotificationResponseReceivedListener(
         () => {
-          navigation.navigate("HomeScreen");
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [{ name: "WelcomeScreen" }]
+            })
+          );
         }
       );
 
@@ -157,30 +158,10 @@ const SplashScreen = ({ navigation }) => {
       >
         {internetIsReachable ? (
           <>
-            <Image source={appIcon} style={styles.logo} />
-            <Text
-              style={[
-                globalStyles.fontAltBold,
-                globalStyles.textSmall,
-                globalStyles.textWhite,
-                globalStyles.textCenter
-              ]}
-            >
-              Daily Banga
-            </Text>
+            <Image source={secondaryLogo} style={styles.logo} />
+
             <View style={styles.cta}>
-              <Button
-                onPress={handleCtaPress}
-                accessoryRight={StarIcon}
-                size="tiny"
-                style={[
-                  globalStyles.mt30,
-                  globalStyles.bgPrimary,
-                  globalStyles.noBorder
-                ]}
-              >
-                {ctaButtonText}
-              </Button>
+              <Spinner status="basic" size="medium" />
             </View>
           </>
         ) : (
@@ -195,8 +176,8 @@ export default SplashScreen;
 
 const styles = StyleSheet.create({
   logo: {
-    height: 50,
-    width: 50,
+    height: 150,
+    width: 150,
     marginBottom: 10
   },
   cta: {

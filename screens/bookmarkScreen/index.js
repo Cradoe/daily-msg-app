@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Spinner, Text } from "@ui-kitten/components";
+import { Layout, Spinner, Text } from "@ui-kitten/components";
 import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
-  Image
+  Image,
+  Alert
 } from "react-native";
 import { globalStyles } from "../../shared/globalStyles";
 import { retrieveDataFromLocalStorage } from "../../helpers";
 import BookmarkItem from "../../components/BookmarkItem";
 import { error404Image } from "../../shared/generalAssets";
 
-const BookmarkScreen = ({ navigation }) => {
+const BookmarkScreen = () => {
   const [bookmark, setBookmark] = useState([]),
     [hasFetchedBookmark, setHasFetchedBookmark] = useState(false),
     fetchUserBookmarkQuotes = async () => {
@@ -22,11 +23,10 @@ const BookmarkScreen = ({ navigation }) => {
           if (bookmark) {
             const reversedList = bookmark.reverse();
             setBookmark(reversedList);
-          } else {
-            console.log("No data");
           }
         })
         .catch((error) => {
+          Alert.alert("Something went wrong", error);
           console.log("Something went wrong", error);
         });
     };

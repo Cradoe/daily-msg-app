@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { globalConstants } from "../constants/global";
 
 export const globalStyles = StyleSheet.create({
@@ -160,7 +160,7 @@ export const globalStyles = StyleSheet.create({
   },
   quoteText: {
     fontWeight: "bold",
-    lineHeight: 25
+    lineHeight: 25,
   },
   textSmall: {
     fontSize: 11

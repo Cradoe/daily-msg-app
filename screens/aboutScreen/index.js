@@ -28,8 +28,7 @@ const About = () => {
             <View>
               <Text style={styles.paragraph}>
                 Daily MSG provides fresh quotes/advice/sayings every day that is
-                intended to inspire the day to day life situations easier of our
-                users.
+                intended to inspire the day to day life situations easier for our users.
               </Text>
               <Text style={styles.paragraph}>
                 We bring to you contents, sourced from all around the world, in

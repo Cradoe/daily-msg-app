@@ -20,18 +20,19 @@ const ItemCard = ({ quote, showAtrribute }) => {
           ]}
         >
           {quote.quote}
-          {quote.citation ? (
-            <Text
-              style={[
-                globalStyles.textSecondary,
-                globalStyles.textCenter,
-                globalStyles.textBold
-              ]}
-            >
-              - {quote.citation}
-            </Text>
-          ) : null}
         </Text>
+        {quote.citation ? (
+          <Text
+            style={[
+              globalStyles.textSecondary,
+              globalStyles.textCenter,
+              globalStyles.textBold,
+              globalStyles.mt20
+            ]}
+          >
+            - {quote.citation}            
+          </Text>
+        ) : null}
       </View>
       {showAtrribute ? <Attribution /> : null}
     </View>

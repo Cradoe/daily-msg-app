@@ -25,10 +25,11 @@ const SplashScreen = ({ navigation }) => {
     [hasFetchedQuotes, setHasFetchedQuotes] = useState(false),
     [hasSavedPushToken, setHasSavedPushToken] = useState(false),
     successCallback = () => {
+      Alert.alert("good");
       setHasFetchedQuotes(true);
     },
     errorCallback = (error) => {
-      console.log(error);
+      Alert.alert(error);
     },
     callback = {
       success: successCallback,
@@ -105,7 +106,7 @@ const SplashScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (hasFetchedQuotes && hasSavedPushToken) {
+    if (hasFetchedQuotes) {
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -113,31 +114,31 @@ const SplashScreen = ({ navigation }) => {
         })
       );
     }
-  }, [hasFetchedQuotes, hasSavedPushToken]);
+  }, [hasFetchedQuotes]);
 
-  useEffect(() => {
+   useEffect(() => {
     if (internetIsReachable && !hasSavedPushToken) {
-      // push Notification
-      registerForPushNotificationsAsync().then((token) => {
-        registerNotifiationTokenToServer(token);
-      });
+       //push Notification
+       registerForPushNotificationsAsync().then((token) => {
+         registerNotifiationTokenToServer(token);
+       });
 
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(
-        () => {
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 1,
-              routes: [{ name: "WelcomeScreen" }]
-            })
-          );
-        }
+       responseListener.current = Notifications.addNotificationResponseReceivedListener(
+         () => {
+           navigation.dispatch(
+             CommonActions.reset({
+               index: 1,
+               routes: [{ name: "WelcomeScreen" }]
+             })
+           );
+         }
       );
 
-      return () => {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      };
+       return () => {
+         Notifications.removeNotificationSubscription(responseListener.current);
+       };
     }
-  }, [internetIsReachable]);
+  }, [internetIsReachable]); 
 
   return (
     <SafeAreaView

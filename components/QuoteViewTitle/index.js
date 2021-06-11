@@ -12,7 +12,7 @@ const QuoteViewTitle = (props) => {
     ),
     handleIndexChange = ({ index }) => {
       setVisible(false);
-      setSelectedCategory(cat[index.row]);
+      setSelectedCategory(categories[index.row]);
     };
 
   const categoryMenuItems =

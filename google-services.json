@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "627336945735",
+    "project_id": "daily-msg-3be16",
+    "storage_bucket": "daily-msg-3be16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627336945735:android:ab78c56a761bd75c7f1162",
+        "android_client_info": {
+          "package_name": "com.daily_msg.daily_msg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627336945735-s7nat9jvhk44cntg7e1p57g6hfusmphq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8cNaXWMLA2NO2J9dn7PI3tbtam3K8xGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627336945735-s7nat9jvhk44cntg7e1p57g6hfusmphq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

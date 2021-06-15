@@ -27,6 +27,7 @@
       "package": "com.daily_msg.daily_msg",
       "versionCode": 1,
       "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
       "permissions": [
         "NOTIFICATIONS",
         "USER_FACING_NOTIFICATIONS",

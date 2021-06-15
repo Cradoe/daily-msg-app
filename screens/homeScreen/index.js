@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Layout, Spinner, ViewPager, Text } from "@ui-kitten/components";
+import {
+  Layout,
+  Spinner,
+  ViewPager,
+  Text,
+  Button
+} from "@ui-kitten/components";
 import { SafeAreaView, View } from "react-native";
 import { globalStyles } from "../../shared/globalStyles";
 import ViewShot from "react-native-view-shot";

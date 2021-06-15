@@ -25,7 +25,6 @@ const SplashScreen = ({ navigation }) => {
     [hasFetchedQuotes, setHasFetchedQuotes] = useState(false),
     [hasSavedPushToken, setHasSavedPushToken] = useState(false),
     successCallback = () => {
-      Alert.alert("good");
       setHasFetchedQuotes(true);
     },
     errorCallback = (error) => {
@@ -106,7 +105,7 @@ const SplashScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (hasFetchedQuotes) {
+    if (hasFetchedQuotes && hasSavedPushToken) {
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -114,7 +113,7 @@ const SplashScreen = ({ navigation }) => {
         })
       );
     }
-  }, [hasFetchedQuotes]);
+  }, [hasFetchedQuotes, hasSavedPushToken]);
 
    useEffect(() => {
     if (internetIsReachable && !hasSavedPushToken) {

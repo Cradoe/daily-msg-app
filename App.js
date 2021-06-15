@@ -12,8 +12,6 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 const customFonts = {
   montserrat_regular: require("./fonts/Montserrat-Regular.otf"),
   montserrat_medium: require("./fonts/Montserrat-Medium.otf"),
-  montserrat_medium_italic: require("./fonts/Montserrat-MediumItalic.otf"),
-  montserrat_alternate_bold: require("./fonts/MontserratAlternates-Bold.otf"),
   ...Ionicons.font
 };
 const customTextProps = {

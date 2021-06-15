@@ -16,7 +16,7 @@ const About = () => {
       <Layout style={globalStyles.containerPadding}>
         <Text
           style={[
-            globalStyles.fontAltBold,
+            globalStyles.fontMedium,
             globalStyles.textBold,
             styles.heading
           ]}

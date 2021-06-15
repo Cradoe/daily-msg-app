@@ -5,145 +5,151 @@ import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 import { globalConstants } from "../constants";
 import {
-  modifyLocalStorage,
-  retrieveDataFromLocalStorage,
-  saveDataToLocalStorage
+    modifyLocalStorage,
+    retrieveDataFromLocalStorage,
+    saveDataToLocalStorage
 } from "./storageHelpers";
 
 const processsingFunc = () => {
-    //default placeholder function
-  },
-  captureDelay = 100;
+        //default placeholder function
+    },
+    captureDelay = 100;
 
-export const hasAndroidPermission = async () => {
-  const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+export const hasAndroidPermission = async() => {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
-  const hasPermission = await PermissionsAndroid.check(permission);
-  const mediaPermission = await MediaLibrary.getPermissionsAsync();
+    const hasPermission = await PermissionsAndroid.check(permission);
+    const mediaPermission = await MediaLibrary.getPermissionsAsync();
 
-  if (hasPermission && mediaPermission.granted) {
-    return true;
-  }
+    if (hasPermission && mediaPermission.granted) {
+        return true;
+    }
 
-  const mediaStatus = MediaLibrary.requestPermissionsAsync();
+    const mediaStatus = MediaLibrary.requestPermissionsAsync();
 
-  const status = await PermissionsAndroid.request(permission);
-  return status === "granted" && mediaStatus.status === "granted";
+    const status = await PermissionsAndroid.request(permission);
+    return status === "granted" && mediaStatus.status === "granted";
 };
 
-export const savePicture = async (localUri) => {
-  if (Platform.OS === "android" && !(await hasAndroidPermission())) {
-    Alert.alert("You need to grant permission.");
-    return;
-  }
-  const timeStamp = new Date().getTime(),
-    newFileName = `${FileSystem.documentDirectory}${timeStamp}.png`;
+export const savePicture = async(localUri) => {
+    if (Platform.OS === "android" && !(await hasAndroidPermission())) {
+        Alert.alert("You need to grant permission.");
+        return;
+    }
+    const timeStamp = new Date().getTime(),
+        newFileName = `${FileSystem.documentDirectory}${timeStamp}.png`;
 
-  FileSystem.copyAsync({ from: localUri, to: newFileName })
-    .then(async () => {
-      const asset = await MediaLibrary.createAssetAsync(newFileName);
-      const DCIM_id = asset.albumId;
-      await MediaLibrary.createAlbumAsync(
-        globalConstants.IMAGE_DOWNLOAD_DIRECTORY,
-        asset,
-        false
-      );
-      await MediaLibrary.removeAssetsFromAlbumAsync([asset], DCIM_id);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    FileSystem.copyAsync({ from: localUri, to: newFileName })
+        .then(async() => {
+            const asset = await MediaLibrary.createAssetAsync(newFileName);
+            const DCIM_id = asset.albumId;
+            await MediaLibrary.createAlbumAsync(
+                globalConstants.IMAGE_DOWNLOAD_DIRECTORY,
+                asset,
+                false
+            );
+            await MediaLibrary.removeAssetsFromAlbumAsync([asset], DCIM_id);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 };
-export const openShareDialogAsync = async (localUrl) => {
-  if (!(await Sharing.isAvailableAsync())) {
-    Alert.alert("Your device does not allow sharing");
-    return;
-  }
-  await Sharing.shareAsync(localUrl);
+export const openShareDialogAsync = async(localUrl) => {
+    if (!(await Sharing.isAvailableAsync())) {
+        Alert.alert("Your device does not allow sharing");
+        return;
+    }
+    await Sharing.shareAsync(localUrl);
 };
 export const captureAndShareScreenshot = (
-  targetRef,
-  processsing = processsingFunc
+    targetRef,
+    processsing = processsingFunc
 ) => {
-  processsing(true);
-  setTimeout(() => {
-    targetRef.current
-      .capture()
-      .then((uri) => {
-        openShareDialogAsync(uri);
-        processsing(false);
-      })
-      .catch((err) => {
-        err && console.log(err);
-        processsing(false);
-      });
-  }, captureDelay);
+    processsing(true);
+    setTimeout(() => {
+        targetRef.current
+            .capture()
+            .then((uri) => {
+                openShareDialogAsync(uri);
+                processsing(false);
+            })
+            .catch((err) => {
+                err && console.log(err);
+                processsing(false);
+            });
+    }, captureDelay);
 };
 export const captureAndSaveScreenshot = (
-  targetRef,
-  processsing = processsingFunc
+    targetRef,
+    processsing = processsingFunc
 ) => {
-  processsing(true);
+    processsing(true);
 
-  setTimeout(() => {
-    targetRef.current
-      .capture()
-      .then((uri) => {
-        savePicture(uri);
-        processsing(false);
-      })
-      .catch((err) => {
-        err && console.log(err);
-        processsing(false);
-      });
-  }, captureDelay);
+    setTimeout(() => {
+        targetRef.current
+            .capture()
+            .then((uri) => {
+                savePicture(uri);
+                processsing(false);
+            })
+            .catch((err) => {
+                err && console.log(err);
+                processsing(false);
+            });
+    }, captureDelay);
 };
 
 export const copyToClipboard = (text) => {
-  Clipboard.setString(text);
+    Clipboard.setString(text);
 };
 
 export const bookmarkQuote = (quote) => {
-  var response = retrieveDataFromLocalStorage("bookmark");
-  response.then((bookmark) => {
-    if (Array.isArray(bookmark)) {
-      if (!bookmark.some((item) => item.id === quote.id)) {
-        modifyLocalStorage(
-          {
-            title: "bookmark",
-            data: quote
-          },
-          0,
-          false
-        );
-      }
-    } else {
-      bookmark = [];
-      bookmark[0] = quote;
-      saveDataToLocalStorage(
-        {
-          title: "bookmark",
-          data: bookmark
-        },
-        0,
-        false
-      );
-    }
-  });
+    var response = retrieveDataFromLocalStorage("bookmark");
+    response.then((bookmark) => {
+        if (Array.isArray(bookmark)) {
+            if (!bookmark.some((item) => item.id === quote.id)) {
+                modifyLocalStorage({
+                        title: "bookmark",
+                        data: quote
+                    },
+                    0,
+                    false
+                );
+            }
+        } else {
+            bookmark = [];
+            bookmark[0] = quote;
+            saveDataToLocalStorage({
+                    title: "bookmark",
+                    data: bookmark
+                },
+                0,
+                false
+            );
+        }
+    });
 };
 export const removeBookmarkedQuote = (quote) => {
-  var response = retrieveDataFromLocalStorage("bookmark");
-  response.then((bookmark) => {
-    if (Array.isArray(bookmark) && bookmark.length > 0) {
-      const newBookmark = bookmark.filter((item) => item.id !== quote.id);
-      saveDataToLocalStorage(
-        {
-          title: "bookmark",
-          data: newBookmark
-        },
-        0,
-        false
-      );
+    var response = retrieveDataFromLocalStorage("bookmark");
+    response.then((bookmark) => {
+        if (Array.isArray(bookmark) && bookmark.length > 0) {
+            const newBookmark = bookmark.filter((item) => item.id !== quote.id);
+            saveDataToLocalStorage({
+                    title: "bookmark",
+                    data: newBookmark
+                },
+                0,
+                false
+            );
+        }
+    });
+};
+export const convertObjToFormData = (object) => {
+    const formData = new FormData();
+    for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key)) {
+            formData.append(key, object[key]);
+        }
     }
-  });
+    return formData;
 };

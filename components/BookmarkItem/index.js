@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { globalStyles } from "../../shared/globalStyles";
 import ViewShot from "react-native-view-shot";
 import ItemCard from "../ItemCard";
@@ -8,17 +9,18 @@ import {
   captureAndShareScreenshot,
   copyToClipboard,
   removeBookmarkedQuote
-} from "../../helpers/global";
+} from "../../helpers";
 
-const BookmarkItem = ({ quote }) => {
-  const [showAtrribute, setShowAtrribute] = useState(false),
-    viewShotRef = useRef(null),
+const BookmarkItem = ( { quote } ) => {
+  const [ showAtrribute, setShowAtrribute ] = useState( false ),
+    viewShotRef = useRef( null ),
+    dispatch = useDispatch(),
     ActionWidgetActions = {
       shareAsImage: () => {
-        captureAndShareScreenshot(viewShotRef, setShowAtrribute);
+        captureAndShareScreenshot( viewShotRef, setShowAtrribute );
       },
       downloadAsImage: () => {
-        captureAndSaveScreenshot(viewShotRef, setShowAtrribute);
+        captureAndSaveScreenshot( viewShotRef, setShowAtrribute );
       },
       copyToClipboard: () => {
         copyToClipboard(
@@ -26,14 +28,14 @@ const BookmarkItem = ({ quote }) => {
         );
       },
       removeBookmark: () => {
-        removeBookmarkedQuote(quote);
+        dispatch( removeBookmarkedQuote( quote ) );
       }
     };
   return (
     <>
       <ActionWidgets action={ActionWidgetActions} />
       <ViewShot
-        style={[globalStyles.containerPadding, { paddingBottom: 10 }]}
+        style={[ globalStyles.containerPadding, { paddingBottom: 10 } ]}
         ref={viewShotRef}
         options={{ format: "png", quality: 1 }}
       >

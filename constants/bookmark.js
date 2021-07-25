@@ -1,0 +1,4 @@
+export const bookmarkConstants = {
+    SET_BOOKMARK_STATE: "SET_BOOKMARK_STATE",
+    UPDATE_BOOKMARK_STATE: "UPDATE_BOOKMARK_STATE"
+};

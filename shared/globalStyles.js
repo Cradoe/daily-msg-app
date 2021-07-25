@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { globalConstants } from "../constants/global";
 
-export const globalStyles = StyleSheet.create({
+export const globalStyles = StyleSheet.create( {
     root: {
         flex: 1
     },
@@ -155,8 +155,9 @@ export const globalStyles = StyleSheet.create({
     quoteText: {
         fontWeight: "bold",
         lineHeight: 25,
+        fontFamily: "montserrat_regular",
     },
     textSmall: {
         fontSize: 11
     }
-});
+} );

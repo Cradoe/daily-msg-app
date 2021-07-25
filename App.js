@@ -8,10 +8,12 @@ import { MainStackNavigator } from "./navigation";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import { store } from "./store/index";
+import { Provider } from "react-redux";
 
 const customFonts = {
-  montserrat_regular: require("./fonts/Montserrat-Regular.otf"),
-  montserrat_medium: require("./fonts/Montserrat-Medium.otf"),
+  montserrat_regular: require( "./fonts/Montserrat-Regular.otf" ),
+  montserrat_medium: require( "./fonts/Montserrat-Medium.otf" ),
   ...Ionicons.font
 };
 const customTextProps = {
@@ -21,21 +23,21 @@ const customTextProps = {
   }
 };
 
-export default function App() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+export default function App () {
+  const [ fontsLoaded, setFontsLoaded ] = useState( false );
   const _loadFontsAsync = async () => {
-    await Font.loadAsync(customFonts);
-    setFontsLoaded(true);
+    await Font.loadAsync( customFonts );
+    setFontsLoaded( true );
   };
 
-  useEffect(() => {
+  useEffect( () => {
     _loadFontsAsync();
-  });
+  } );
 
-  if (fontsLoaded) {
-    setCustomText(customTextProps);
+  if ( fontsLoaded ) {
+    setCustomText( customTextProps );
     return (
-      <>
+      <Provider store={store}>
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.light}>
           <>
@@ -43,17 +45,18 @@ export default function App() {
             <MainStackNavigator />
           </>
         </ApplicationProvider>
-      </>
+      </Provider>
     );
   } else {
     return (
       <AppLoading
         onError={() => {
-          Alert.alert("Opps! Unable to start app.");
+          Alert.alert( "Opps! Unable to start app." );
         }}
         startAsync={_loadFontsAsync}
-        onFinish={() => setFontsLoaded(true)}
+        onFinish={() => setFontsLoaded( true )}
       />
+
     );
   }
 }

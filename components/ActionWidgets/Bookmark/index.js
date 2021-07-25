@@ -3,14 +3,14 @@ import { TouchableOpacity } from "react-native";
 import { Icon, Tooltip } from "@ui-kitten/components";
 import { globalStyles } from "../../../shared/globalStyles";
 
-const BookmarkWidget = ({ action }) => {
-  const [visible, setVisible] = useState(false),
+const BookmarkWidget = ( { action } ) => {
+  const [ visible, setVisible ] = useState( false ),
     handlePress = () => {
-      setVisible(true);
+      setVisible( true );
       action();
-      setTimeout(() => {
-        setVisible(false);
-      }, 800);
+      setTimeout( () => {
+        setVisible( false );
+      }, 1500 );
     },
     renderCopyAnchor = () => (
       <TouchableOpacity
@@ -20,7 +20,7 @@ const BookmarkWidget = ({ action }) => {
         <Icon
           fill="#8F9BB3"
           name="bookmark"
-          style={[globalStyles.widgetIcon]}
+          style={[ globalStyles.widgetIcon ]}
         />
       </TouchableOpacity>
     );
@@ -29,7 +29,7 @@ const BookmarkWidget = ({ action }) => {
     <Tooltip
       anchor={renderCopyAnchor}
       visible={visible}
-      onBackdropPress={() => setVisible(false)}
+      onBackdropPress={() => setVisible( false )}
     >
       Added to bookmark
     </Tooltip>

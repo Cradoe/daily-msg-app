@@ -12,7 +12,7 @@ import { globalConstants } from "../../constants";
 
 const About = () => {
   return (
-    <SafeAreaView style={[globalStyles.root, globalStyles.screenBg]}>
+    <SafeAreaView style={[ globalStyles.root, globalStyles.screenBg ]}>
       <Layout style={globalStyles.containerPadding}>
         <Text
           style={[
@@ -23,7 +23,7 @@ const About = () => {
         >
           About Us
         </Text>
-        <ScrollView style={[globalStyles.mt20, globalStyles.mb20]}>
+        <ScrollView style={[ globalStyles.mt20, globalStyles.mb20 ]}>
           <Card style={globalStyles.mb20}>
             <View>
               <Text style={styles.paragraph}>
@@ -42,7 +42,7 @@ const About = () => {
               </Text>
 
               <Text style={styles.paragraph}>
-                For us, the quality and accuracy of our contents are a top
+                For us, the quality and accuracy of our contents is a top
                 priority. That's why we perform scheduled proofreading of
                 contents that'll be served to our users. We'd as well appreciate
                 your comments if should you find an error has slipped through
@@ -57,7 +57,7 @@ const About = () => {
 
               <Text style={styles.paragraph}>Email: info@daily-msg.com</Text>
               <Text style={styles.paragraph}>Phone: +234(0) 814 961 7083</Text>
-              <Text style={[styles.paragraph, globalStyles.mb20]}>
+              <Text style={[ styles.paragraph, globalStyles.mb20 ]}>
                 Website: www.daily-msg.com
               </Text>
             </View>
@@ -68,7 +68,7 @@ const About = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   heading: {
     borderBottomColor: globalConstants.SECONDARY_COLOR,
     borderBottomWidth: 5,
@@ -80,6 +80,6 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     textAlign: "justify"
   }
-});
+} );
 
 export default About;

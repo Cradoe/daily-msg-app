@@ -5,6 +5,7 @@ import {
   Spinner,
   ViewPager
 } from "@ui-kitten/components";
+import Constants from "expo-constants";
 import { SafeAreaView, ScrollView, View } from "react-native";
 import { globalStyles } from "../../shared/globalStyles";
 import ViewShot from "react-native-view-shot";
@@ -23,8 +24,21 @@ import ErrorMessage from "../../components/ErrorMessage";
 import * as Network from "expo-network";
 import { requestAllQuotes } from "../../actions";
 import NoInternet from "../../components/NoInternet";
+import { AppUpdateModal } from "../../components/Modals";
+import { checkAppVersions } from "../../actions/AppVersions/checkAppVersions";
 
-const SingleView = ( { navigation } ) => {
+
+const androidAppUpdateDefaultState = {
+  showDialog: false,
+  link: null
+},
+  iosAppUpdateDefaultState = {
+    showDialog: false,
+    link: null
+  };
+
+
+const HomeScreen = ( { navigation } ) => {
   const [ loadedQuotes, setLoadedQuotes ] = useState( null ),
     [ loadedCategories, setLoadedCategories ] = useState( [] ),
     [ pagedCategoryIndex, setPagedCategoryIndex ] = React.useState( 0 ),
@@ -32,6 +46,9 @@ const SingleView = ( { navigation } ) => {
     [ currentQuote, setCurrentQuote ] = useState( null ),
     [ noInternetAccess, setNoInternetAccess ] = useState( true ),
     [ responseMessage, setResponseMessage ] = useState( null ),
+    [ hasCheckedAppVersion, setHasCheckedAppVersion ] = useState( false ),
+    [ androidAppVersion, setAndroidAppVersion ] = useState( androidAppUpdateDefaultState ),
+    [ iosAppVersion, setIosAppVersion ] = useState( iosAppUpdateDefaultState ),
     shouldLoadPagedComponent = ( index ) => index === pagedCategoryIndex,
     viewShotRef = useRef( null ),
     dispatch = useDispatch(),
@@ -94,7 +111,33 @@ const SingleView = ( { navigation } ) => {
         categories.push( quote.category );
       } );
       setLoadedCategories( categories );
-    };
+    },
+    checkRemoteAppVersion = async () => {
+      const callbackFn = ( remoteVersion ) => {
+
+        if ( Platform.OS === "android" && remoteVersion.android.version !== Constants.manifest.version ) {
+          setTimeout( () => {
+            setAndroidAppVersion( { link: remoteVersion.android.url, showDialog: true } );
+          }, 1000 );
+        } else if ( Platform.OS === "ios" && remoteVersion.ios.version !== Constants.manifest.version ) {
+          setTimeout( () => {
+            setIosAppVersion( { link: remoteVersion.ios.url, showDialog: true } );
+          }, 1000 );
+        }
+
+        setHasCheckedAppVersion( true );
+      }
+
+      await Network.getNetworkStateAsync()
+        .then( ( networkStatus ) => {
+          if ( networkStatus.isInternetReachable ) {
+            checkAppVersions( callbackFn );
+          }
+        } )
+        .catch( ( error ) => {
+          console.log( "Something went wrong", error );
+        } );
+    }
 
   useEffect( () => {
     const timer = setTimeout( () => {
@@ -125,17 +168,30 @@ const SingleView = ( { navigation } ) => {
     }
   }, [ loadedQuotes ] );
 
+  useEffect( () => {
+    if ( !hasCheckedAppVersion ) {
+      //check app version from server
+      checkRemoteAppVersion();
+    }
+  }, [ hasCheckedAppVersion ] );
+
   const categoryPagerList =
     loadedQuotes && loadedQuotes.length > 0
       ? loadedQuotes.map( ( quote, index ) => {
         return (
           <ScrollView
             key={index}>
+
+            {androidAppVersion.showDialog ? <AppUpdateModal dialog={androidAppVersion} setDialog={setAndroidAppVersion} /> : null}
+
+            {iosAppVersion.showDialog ? <AppUpdateModal dialog={iosAppVersion} setDialog={setIosAppVersion} /> : null}
+
             <View
               style={{
                 minHeight: ( 70 / 100 ) * globalConstants.SCREEN_HEIGHT
               }}
             >
+
               {currentQuote ? (
                 <>
                   <ActionWidgets action={ActionWidgetActions} />
@@ -209,4 +265,4 @@ const SingleView = ( { navigation } ) => {
   );
 };
 
-export default SingleView;
+export default HomeScreen;

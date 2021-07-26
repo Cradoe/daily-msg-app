@@ -19,125 +19,131 @@ import NoInternet from "../../components/NoInternet";
 import { requestAllQuotes, registerPushTokenToServer } from "../../actions";
 import { retrieveDataFromLocalStorage } from "../../helpers";
 
-const SplashScreen = ({ navigation }) => {
+
+const SplashScreen = ( { navigation } ) => {
   const responseListener = useRef(),
-    [internetIsReachable, setInternetIsReachable] = useState(true),
-    [hasFetchedQuotes, setHasFetchedQuotes] = useState(false),
-    [hasSavedPushToken, setHasSavedPushToken] = useState(false),
+    [ internetIsReachable, setInternetIsReachable ] = useState( true ),
+    [ hasFetchedQuotes, setHasFetchedQuotes ] = useState( false ),
+    [ hasSavedPushToken, setHasSavedPushToken ] = useState( false ),
     successCallback = () => {
-      setHasFetchedQuotes(true);
+      setHasFetchedQuotes( true );
     },
-    errorCallback = (error) => {
-      Alert.alert(error);
+    errorCallback = ( error ) => {
+      Alert.alert( error );
     },
     callback = {
       success: successCallback,
       error: errorCallback
     },
     fetchQuotesFromServer = async () => {
-      await retrieveDataFromLocalStorage("todayQuotes")
-        .then(async (todayQuotes) => {
-          if (todayQuotes) {
-            setHasFetchedQuotes(true);
+      await retrieveDataFromLocalStorage( "todayQuotes" )
+        .then( async ( todayQuotes ) => {
+          if ( todayQuotes ) {
+            setHasFetchedQuotes( true );
           } else {
             await Network.getNetworkStateAsync()
-              .then((networkStatus) => {
-                if (networkStatus.isInternetReachable) {
-                  if (!internetIsReachable) {
-                    setInternetIsReachable(true);
+              .then( ( networkStatus ) => {
+                if ( networkStatus.isInternetReachable ) {
+                  if ( !internetIsReachable ) {
+                    setInternetIsReachable( true );
                   }
-                  requestAllQuotes(callback);
+                  requestAllQuotes( callback );
                 } else {
-                  setInternetIsReachable(false);
+                  setInternetIsReachable( false );
                 }
-              })
-              .catch((error) => {
-                console.log("Something went wrong", error);
-              });
+              } )
+              .catch( ( error ) => {
+                console.log( "Something went wrong", error );
+              } );
           }
-        })
-        .catch((error) => {
-          console.log("Something went wrong", error);
-        });
+        } )
+        .catch( ( error ) => {
+          console.log( "Something went wrong", error );
+        } );
     },
-    registerNotifiationTokenToServer = (token) => {
+    registerNotifiationTokenToServer = ( token ) => {
       const callback = {
         success: () => {
-          setHasSavedPushToken(true);
+          setHasSavedPushToken( true );
         }
       };
-      registerPushTokenToServer(token, callback);
+      registerPushTokenToServer( token, callback );
     },
     registerForPushNotificationsAsync = async () => {
       let token;
-      if (Constants.isDevice) {
+      if ( Constants.isDevice ) {
         const {
           status: existingStatus
         } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
-        if (existingStatus !== "granted") {
+        if ( existingStatus !== "granted" ) {
           const { status } = await Notifications.requestPermissionsAsync();
           finalStatus = status;
         }
-        if (finalStatus !== "granted") {
-          Alert.alert("Failed to get push token for push notification!");
+        if ( finalStatus !== "granted" ) {
+          Alert.alert( "Failed to get push token for push notification!" );
           return;
         }
-        token = (await Notifications.getExpoPushTokenAsync()).data;
+        token = ( await Notifications.getExpoPushTokenAsync() ).data;
       } else {
-        Alert.alert("Must use physical device for Push Notifications");
+        Alert.alert( "Must use physical device for Push Notifications" );
       }
 
-      if (Platform.OS === "android") {
-        Notifications.setNotificationChannelAsync("default", {
+      if ( Platform.OS === "android" ) {
+        Notifications.setNotificationChannelAsync( "default", {
           name: "default",
           importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
+          vibrationPattern: [ 0, 250, 250, 250 ],
           lightColor: "#FF231F7C"
-        });
+        } );
       }
 
       return token;
-    };
+    }
 
-  useEffect(() => {
+  useEffect( () => {
     fetchQuotesFromServer();
-  }, []);
+  }, [] );
 
-  useEffect(() => {
-    if (hasFetchedQuotes && hasSavedPushToken) {
+  useEffect( () => {
+    if ( hasFetchedQuotes ) {
       navigation.dispatch(
-        CommonActions.reset({
+        CommonActions.reset( {
           index: 1,
-          routes: [{ name: "WelcomeScreen" }]
-        })
+          routes: [ { name: "WelcomeScreen" } ]
+        } )
       );
     }
-  }, [hasFetchedQuotes, hasSavedPushToken]);
+  }, [ hasFetchedQuotes ] );
 
-   useEffect(() => {
-    if (internetIsReachable && !hasSavedPushToken) {
-       //push Notification
-       registerForPushNotificationsAsync().then((token) => {
-         registerNotifiationTokenToServer(token);
-       });
+  useEffect( () => {
+    if ( internetIsReachable && !hasSavedPushToken ) {
+      return;
+      //push Notification
+      registerForPushNotificationsAsync().then( ( token ) => {
+        registerNotifiationTokenToServer( token );
+      } );
 
-       responseListener.current = Notifications.addNotificationResponseReceivedListener(
-         () => {
-           navigation.dispatch(
-             CommonActions.reset({
-               index: 1,
-               routes: [{ name: "WelcomeScreen" }]
-             })
-           );
-         }
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(
+        () => {
+          navigation.dispatch(
+            CommonActions.reset( {
+              index: 1,
+              routes: [ { name: "WelcomeScreen" } ]
+            } )
+          );
+        }
       );
 
-       return () => {
-         Notifications.removeNotificationSubscription(responseListener.current);
-       };
+      return () => {
+        Notifications.removeNotificationSubscription( responseListener.current );
+      };
     }
-  }, [internetIsReachable]); 
+  }, [ internetIsReachable ] );
+
+
+
+
 
   return (
     <SafeAreaView
@@ -156,6 +162,8 @@ const SplashScreen = ({ navigation }) => {
           { position: "relative" }
         ]}
       >
+
+
         {internetIsReachable ? (
           <>
             <Image source={secondaryLogo} style={styles.logo} />
@@ -174,7 +182,7 @@ const SplashScreen = ({ navigation }) => {
 
 export default SplashScreen;
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create( {
   logo: {
     height: 150,
     width: 150,
@@ -182,6 +190,6 @@ const styles = StyleSheet.create({
   },
   cta: {
     position: "absolute",
-    bottom: (10 / 100) * globalConstants.SCREEN_HEIGHT
+    bottom: ( 10 / 100 ) * globalConstants.SCREEN_HEIGHT
   }
-});
+} );

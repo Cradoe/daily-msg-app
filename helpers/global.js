@@ -4,6 +4,7 @@ import Clipboard from "expo-clipboard";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 import { globalConstants } from "../constants";
+import { removeDataFromLocalStorage, retrieveDataFromLocalStorage, saveDataToLocalStorage } from "./storageHelpers";
 
 const processsingFunc = () => {
     //default placeholder function
@@ -31,6 +32,7 @@ export const savePicture = async ( localUri ) => {
         Alert.alert( "Grant permission and click on download button again." );
         return;
     }
+
     const timeStamp = new Date().getTime(),
         newFileName = `${FileSystem.documentDirectory}${timeStamp}.png`;
 
@@ -44,6 +46,13 @@ export const savePicture = async ( localUri ) => {
                 false
             );
             await MediaLibrary.removeAssetsFromAlbumAsync( [ asset ], DCIM_id );
+            saveDataToLocalStorage( {
+                title: "storagePermission",
+                data: true
+            },
+                0,
+                false
+            );
         } )
         .catch( ( err ) => {
             console.log( err );
@@ -74,12 +83,11 @@ export const captureAndShareScreenshot = (
             } );
     }, captureDelay );
 };
-export const captureAndSaveScreenshot = (
+export const captureAndSaveScreenshot = async (
     targetRef,
     processsing = processsingFunc
 ) => {
     processsing( true );
-
     setTimeout( () => {
         targetRef.current
             .capture()
@@ -92,6 +100,7 @@ export const captureAndSaveScreenshot = (
                 processsing( false );
             } );
     }, captureDelay );
+
 };
 
 export const copyToClipboard = ( text ) => {

@@ -21,6 +21,8 @@ export const hasAndroidPermission = async () => {
         return true;
     }
 
+    Alert.alert( "Click on download button again after granting permission." );
+
     const mediaStatus = MediaLibrary.requestPermissionsAsync();
 
     const status = await PermissionsAndroid.request( permission );
@@ -28,8 +30,9 @@ export const hasAndroidPermission = async () => {
 };
 
 export const savePicture = async ( localUri ) => {
+
     if ( Platform.OS === "android" && !( await hasAndroidPermission() ) ) {
-        Alert.alert( "Grant permission and click on download button again." );
+        Alert.alert( "You need to grant access to media files." );
         return;
     }
 
@@ -100,7 +103,6 @@ export const captureAndSaveScreenshot = async (
                 processsing( false );
             } );
     }, captureDelay );
-
 };
 
 export const copyToClipboard = ( text ) => {
